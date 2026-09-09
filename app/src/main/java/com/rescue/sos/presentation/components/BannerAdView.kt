@@ -7,15 +7,16 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
+import com.rescue.sos.util.SubscriptionLevel
 
 @Composable
 fun BannerAdView(
-    isProUser: Boolean,
+    subscriptionLevel: SubscriptionLevel,
     isEmergencyActive: Boolean,
     modifier: Modifier = Modifier
 ) {
-    // Si el usuario es PRO / Donador O si hay una emergencia activa, ocultar anuncios completamente
-    if (isProUser || isEmergencyActive) {
+    // Si el usuario tiene suscripción PRO o VIP O si hay una emergencia activa, ocultar anuncios completamente
+    if (subscriptionLevel != SubscriptionLevel.FREE || isEmergencyActive) {
         return
     }
 
@@ -30,3 +31,4 @@ fun BannerAdView(
         }
     )
 }
+

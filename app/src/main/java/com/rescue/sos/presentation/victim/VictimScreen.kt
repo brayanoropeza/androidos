@@ -57,11 +57,15 @@ import com.rescue.sos.data.location.LocationHelper
 import com.rescue.sos.data.network.SasmexAlertClient
 import com.rescue.sos.presentation.components.BannerAdView
 import com.rescue.sos.service.SosForegroundService
+import androidx.compose.material.icons.filled.Diamond
+import com.rescue.sos.util.SubscriptionLevel
 import kotlinx.coroutines.delay
 
 @Composable
 fun VictimScreen(
     victimId: String,
+    subscriptionLevel: SubscriptionLevel,
+    onSubscriptionChange: (SubscriptionLevel) -> Unit,
     onStatusMessage: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -78,8 +82,6 @@ fun VictimScreen(
     var isLocationEnabled by remember { mutableStateOf(locationHelper.isLocationEnabled()) }
     var isBatteryExempt by remember { mutableStateOf(batteryHelper.isIgnoringBatteryOptimizations()) }
 
-    // Modo PRO / Donador para desarrollador y pruebas (Remueve anuncios si está activo)
-    var isProUser by remember { mutableStateOf(false) }
     var showDonateDialog by remember { mutableStateOf(false) }
     var secretTapCount by remember { mutableIntStateOf(0) }
 
@@ -588,47 +590,54 @@ fun VictimScreen(
                 }
             }
 
-            // Banner de Publicidad Google AdMob (Se oculta si es PRO o durante emergencia)
+            // Banner de Publicidad Google AdMob (Se oculta si es PRO, VIP o durante emergencia)
             BannerAdView(
-                isProUser = isProUser,
+                subscriptionLevel = subscriptionLevel,
                 isEmergencyActive = isSosActive || activeSasmexAlert != null || show40sConfirmationDialog
             )
 
-            // Créditos de Desarrollador con BOTÓN SECRETO (3 Taps para activar/desactivar anuncios)
+            // Créditos de Desarrollador con indicación de suscripción activa
             Surface(
                 color = MaterialTheme.colorScheme.surfaceVariant,
                 shape = MaterialTheme.shapes.medium,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        secretTapCount += 1
-                        if (secretTapCount >= 3) {
-                            secretTapCount = 0
-                            isProUser = !isProUser
-                            onStatusMessage(if (isProUser) "🔑 ¡MODO DESARROLLADOR ACTIVADO! Anuncios removidos." else "🔑 Modo desarrollador desactivado. Anuncios visibles.")
-                        }
-                    }
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Row(
                     modifier = Modifier.padding(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Code,
+                        imageVector = when (subscriptionLevel) {
+                            SubscriptionLevel.PRO -> Icons.Default.Star
+                            SubscriptionLevel.VIP -> Icons.Default.Diamond
+                            else -> Icons.Default.Code
+                        },
                         contentDescription = null,
-                        tint = if (isProUser) Color(0xFFFFD54F) else MaterialTheme.colorScheme.primary,
+                        tint = when (subscriptionLevel) {
+                            SubscriptionLevel.PRO -> Color(0xFFFFD54F)
+                            SubscriptionLevel.VIP -> Color(0xFF00E5FF)
+                            else -> MaterialTheme.colorScheme.primary
+                        },
                         modifier = Modifier.size(16.dp)
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Column {
                         Text(
-                            text = if (isProUser) "Desarrollada por Brayan Jesús Oropeza Acuña (MODO DEV PRO)" else "Desarrollada por Brayan Jesús Oropeza Acuña",
+                            text = when (subscriptionLevel) {
+                                SubscriptionLevel.PRO -> "Desarrollada por Brayan Jesús Oropeza Acuña (MODO PRO)"
+                                SubscriptionLevel.VIP -> "Desarrollada por Brayan Jesús Oropeza Acuña (MODO VIP AUTOZEN)"
+                                else -> "Desarrollada por Brayan Jesús Oropeza Acuña"
+                            },
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.labelMedium,
-                            color = if (isProUser) Color(0xFFFFD54F) else MaterialTheme.colorScheme.onSurfaceVariant
+                            color = when (subscriptionLevel) {
+                                SubscriptionLevel.PRO -> Color(0xFFFFD54F)
+                                SubscriptionLevel.VIP -> Color(0xFF00E5FF)
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            }
                         )
                         Text(
-                            text = "OropSOS Socorro Sísmico + GPS | Android ${Build.VERSION.RELEASE}",
+                            text = "AutoZen / OropSOS Socorro Sísmico + GPS | Android ${Build.VERSION.RELEASE}",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.outline
                         )
