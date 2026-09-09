@@ -59,12 +59,12 @@
             </intent-filter>
         </activity>
 
-        <!-- Foreground Service para mantener el SOS activo en Android 14, 15, 16 y 17+ -->
+        <!-- Foreground Service para mantener la app activa en primer plano -->
         <service
             android:name=".service.SosForegroundService"
             android:enabled="true"
             android:exported="false"
-            android:foregroundServiceType="location" />
+            android:foregroundServiceType="connectedDevice|location" />
 
     </application>
 
