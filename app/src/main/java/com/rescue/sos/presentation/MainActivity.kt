@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CellTower
 import androidx.compose.material.icons.filled.Diamond
+import androidx.compose.material.icons.filled.DirectionsCar
 import androidx.compose.material.icons.filled.MedicalServices
+import androidx.compose.material.icons.filled.Navigation
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
@@ -96,13 +98,13 @@ fun MainAppContent(victimId: String) {
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
-                                imageVector = Icons.Default.Warning,
+                                imageVector = Icons.Default.DirectionsCar,
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.primary
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "AutoZen / OropSOS",
+                                text = "AutoZen Car Launcher",
                                 fontWeight = FontWeight.Bold
                             )
                             Spacer(modifier = Modifier.width(8.dp))
@@ -141,7 +143,7 @@ fun MainAppContent(victimId: String) {
                             }
                         }
                         Text(
-                            text = "Por Brayan Jesús Oropeza Acuña (Toca 3 veces para modo dev)",
+                            text = "Car Assistant & Navigation (Toca 3 veces para suscripciones)",
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.outline
                         )
@@ -159,14 +161,14 @@ fun MainAppContent(victimId: String) {
                 NavigationBarItem(
                     selected = selectedTab == 0,
                     onClick = { selectedTab = 0 },
-                    icon = { Icon(Icons.Default.MedicalServices, contentDescription = "Modo Víctima") },
-                    label = { Text("Modo Víctima") }
+                    icon = { Icon(Icons.Default.DirectionsCar, contentDescription = "Modo Conducción") },
+                    label = { Text("AutoZen Drive") }
                 )
                 NavigationBarItem(
                     selected = selectedTab == 1,
                     onClick = { selectedTab = 1 },
-                    icon = { Icon(Icons.Default.CellTower, contentDescription = "Modo Rescatista") },
-                    label = { Text("Modo Rescatista") }
+                    icon = { Icon(Icons.Default.Navigation, contentDescription = "Navegación & Mapas") },
+                    label = { Text("Navegación") }
                 )
             }
         },
