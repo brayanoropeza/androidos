@@ -290,9 +290,9 @@ fun VictimScreen(
                         modifier = Modifier.size(32.dp)
                     ) {
                         Icon(
-                            imageVector = if (isProUser) Icons.Default.Star else Icons.Default.Coffee,
+                            imageVector = if (subscriptionLevel != SubscriptionLevel.FREE) Icons.Default.Star else Icons.Default.Coffee,
                             contentDescription = "Donar",
-                            tint = if (isProUser) Color(0xFFFFD54F) else Color(0xFFFFB74D),
+                            tint = if (subscriptionLevel != SubscriptionLevel.FREE) Color(0xFFFFD54F) else Color(0xFFFFB74D),
                             modifier = Modifier.size(20.dp)
                         )
                     }
@@ -655,13 +655,13 @@ fun VictimScreen(
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(imageVector = Icons.Default.Coffee, contentDescription = null, tint = Color(0xFFFFB74D))
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("☕ Apoyar a OropSOS", fontWeight = FontWeight.Bold)
+                    Text("☕ Apoyar a AutoZen / OropSOS", fontWeight = FontWeight.Bold)
                 }
             },
             text = {
                 Column {
                     Text(
-                        text = "OropSOS es un proyecto de socorro y protección civil sísmica. Apoya el desarrollo donando para un café o activa el Modo PRO para remover anuncios.",
+                        text = "AutoZen es un proyecto de socorro y asistencia. Apoya el desarrollo donando para un café o activa el Modo PRO para remover anuncios.",
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(12.dp))
@@ -671,10 +671,10 @@ fun VictimScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = if (isProUser) "Estado: ⭐️ MODO PRO ACTIVO (SIN ANUNCIOS)" else "Estado: Versión Estándar (Con Banners)",
+                            text = if (subscriptionLevel != SubscriptionLevel.FREE) "Estado: ⭐️ MODO $subscriptionLevel ACTIVO (SIN ANUNCIOS)" else "Estado: Versión Estándar (Con Banners)",
                             fontWeight = FontWeight.Bold,
                             fontSize = 11.sp,
-                            color = if (isProUser) Color(0xFFFFD54F) else Color.Gray
+                            color = if (subscriptionLevel != SubscriptionLevel.FREE) Color(0xFFFFD54F) else Color.Gray
                         )
                     }
                 }
@@ -682,13 +682,14 @@ fun VictimScreen(
             confirmButton = {
                 Button(
                     onClick = {
-                        isProUser = !isProUser
+                        val newLevel = if (subscriptionLevel == SubscriptionLevel.FREE) SubscriptionLevel.PRO else SubscriptionLevel.FREE
+                        onSubscriptionChange(newLevel)
                         showDonateDialog = false
-                        onStatusMessage(if (isProUser) "⭐️ MODO PRO ACTIVADO: Anuncios removidos." else "Modo estándar activado.")
+                        onStatusMessage(if (newLevel != SubscriptionLevel.FREE) "⭐️ MODO PRO ACTIVADO: Anuncios removidos." else "Modo estándar activado.")
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = if (isProUser) Color.DarkGray else Color(0xFF2E7D32))
+                    colors = ButtonDefaults.buttonColors(containerColor = if (subscriptionLevel != SubscriptionLevel.FREE) Color.DarkGray else Color(0xFF2E7D32))
                 ) {
-                    Text(if (isProUser) "DESACTIVAR MODO PRO" else "ACTIVAR MODO PRO (REMOVER ANUNCIOS)")
+                    Text(if (subscriptionLevel != SubscriptionLevel.FREE) "DESACTIVAR MODO PRO" else "ACTIVAR MODO PRO (REMOVER ANUNCIOS)")
                 }
             },
             dismissButton = {
