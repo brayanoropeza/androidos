@@ -1,0 +1,1 @@
+{"$concat": [{"$ref": "../../shared/list/features.common.json#"}, {"$ref": "ocm.features.common.json#"}, {"$ref": "ocm.hybrid.features.common.json#"}, {"$removeElement": {"filter": ["terrain"], "from": {"$ref": "ocm.features.common.json#"}}}]}

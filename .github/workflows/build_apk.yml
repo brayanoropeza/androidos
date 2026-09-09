@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build AutoZen APK
 
 on:
   push:
@@ -35,8 +35,8 @@ jobs:
       - name: Build Debug APK
         run: ./gradlew assembleDebug --info --stacktrace
 
-      - name: Upload APK Artifact
+      - name: Upload AutoZen APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: OropSOS-Debug-APK
+          name: AutoZen-CarLauncher-APK
           path: app/build/outputs/apk/debug/app-debug.apk

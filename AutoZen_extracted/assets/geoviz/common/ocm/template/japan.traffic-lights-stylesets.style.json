@@ -1,0 +1,1 @@
+{"styles": [{"id": "japan-ocm-traffic_lights", "extends": "japan-traffic_lights", "replaces": "ocm-traffic_lights", "layer": "ocm_cartography_labels", "technique": "icon", "attr": {"minZoomLevel": ["case", ["==", ["get", "source"], "ipc"], 16, ["base-attribute-value"]]}}]}

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+option java_package = "com.zenthek.autozen.proto";
+option java_multiple_files = true;
+
+enum WeatherType {
+    Clear = 0;
+    PartlyCloudy = 1;
+    Cloudy = 2;
+    Overcast = 3;
+    Mist = 4;
+    Drizzle = 5;
+    LightSnow = 6;
+    Thunderstorm = 7;
+    Snow = 8;
+    Fog = 9;
+    FreezingDrizzle = 10;
+    LightRain = 11;
+    Rain = 12;
+    SnowRain = 13;
+    Unknown = 14;
+}

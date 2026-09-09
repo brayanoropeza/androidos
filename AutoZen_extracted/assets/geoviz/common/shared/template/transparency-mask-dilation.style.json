@@ -1,0 +1,1 @@
+{"styles": [{"id": "transparency_mask_dilation", "layer": "transparency-mask-dilation-quad", "technique": "transparency_mask_dilation", "attr": {"alpha": ["ref", "Route.TransparencyMask.Alpha"], "margin": ["ref", "Route.TransparencyMask.Margin"], "fade-curve-exponent": ["ref", "Route.TransparencyMask.FadeCurveExponent"]}}]}

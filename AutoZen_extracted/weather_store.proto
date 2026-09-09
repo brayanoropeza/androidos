@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+import "weather_prefs.proto";
+
+option java_package = "com.zenthek.autozen.proto";
+option java_multiple_files = true;
+
+message WeatherDataStore {
+  int32 precipitationProbability = 1;
+  bool isDayTime = 2;
+  int32 humidity = 3;
+  int64 timestamp = 4;
+  WeatherType weatherType = 5;
+  int32 temperatureInCelsius = 6;
+  int32 temperatureInFahrenheit = 7;
+  int32 windSpeedMiles = 8;
+  int32 windSpeedKmpH = 9;
+  int32 feelsLikeInCelsius = 10;
+  int32 feelsLikeInFahrenheit = 11;
+  int32 maxTempInCelsius = 12;
+  int32 maxTempInFahrenheit = 13;
+  int32 minTempInCelsius = 14;
+  int32 minTempInFahrenheit = 15;
+  int32 uvIndex = 16;
+  repeated HourlyWeather hourlyWeather = 17;
+  repeated HourlyWeather hourlyWeatherNextDay = 18;
+  repeated Alert alerts = 19;
+  int32 visibility = 20;
+  int32 visibilityMiles = 21;
+  int32 pressure = 22;
+  int32 pressureInches = 23;
+  optional AirQuality airQuality = 24;
+  float precipMm = 25;
+  float precipIn = 26;
+  optional string region = 27;
+  Astronomy astronomy = 28;
+}
+message Alert {
+  string title = 1;
+  string description = 2;
+}
+
+message HourlyWeather {
+  WeatherType weatherType = 1;
+  int32 temperatureInCelsius = 2;
+  int32 temperatureInFahrenheit = 3;
+  string time = 4;
+  bool isDayTime = 5;
+  int32 chanceOfRainPercentage = 6;
+  int32 dewPointC = 7;
+  int32 DewPointF = 8;
+  int32 WindGustKmph = 9;
+  int32 WindGustMiles = 10;
+}
+
+message AirQuality{
+  float carbonMonoxide = 1;
+  float nitrogenDioxide = 2;
+  float ozone = 3;
+  float sulphurDioxide = 4;
+  float particulateMatter25 = 5;
+  float particulateMatter10 = 6;
+  int32 usEpaIndex = 7;
+  int32 gbDefraIndex = 8;
+}
+
+message Astronomy{
+  int64 sunriseInMillis = 1;
+  int64 sunsetInMillis = 2;
+}

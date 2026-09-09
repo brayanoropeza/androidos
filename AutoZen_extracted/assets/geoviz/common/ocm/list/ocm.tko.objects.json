@@ -1,0 +1,1 @@
+{"$concat": [{"$ref": "ocm.objects.json#"}, {"ocm_train_station_cartography_japan": {"factory": "geometry-polygon", "factoryOptions": {"datasource": "ocm_train_station_cartography_japan", "flags": ["outline", "outline-shiftable"]}}}]}

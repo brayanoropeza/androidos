@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "com.zenthek.autozen.proto";
+option java_multiple_files = true;
+
+message SunriseSunset{
+  int64 sunriseTimeInSeconds = 1;
+  int64 sunsetTimeInSeconds = 2;
+  int64 lastUpdatedTimeStamp = 3;
+}

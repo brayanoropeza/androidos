@@ -1,0 +1,1 @@
+{"styles": [{"id": "terrain_depth_pass", "layer": "terrain", "technique": "terrain", "description": "depth", "attr": {"category": "depth", "scale-for-elevating": ["ref", "Terrain.3d.Shading.Scale"]}}]}

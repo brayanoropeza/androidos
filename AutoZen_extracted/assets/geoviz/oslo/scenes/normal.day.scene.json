@@ -1,0 +1,1 @@
+{"inherit": ["../../common/ocm/scene.json", "../assets/assets.day.json"], "extends": ["../../common/ocm/common.json", "../../common/ocm/list/ocm.features.configuration.normal.json", "../schemes/normal.day.definitions.json"], "dayCycleLighting": {"$ref": "../../common/shared/list/daycyclelighting.normal.json#"}}

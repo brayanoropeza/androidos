@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+option java_package = "com.zenthek.autozen.proto";
+option java_multiple_files = true;
+
+enum ObdDeviceKind {
+  OBD_BLUETOOTH = 0;
+  OBD_WIFI = 1;
+  OBD_MOCK = 2;
+}
+
+message ObdDeviceRecord {
+  string id = 1;
+  ObdDeviceKind kind = 2;
+  string name = 3;
+  string address = 4;      // Bluetooth MAC
+  string ip_address = 5;   // WiFi
+  int32 port = 6;          // WiFi
+  bool is_paired = 7;      // Bluetooth
+  int64 last_connected = 8;
+}
+
+message ObdDeviceStore {
+  repeated ObdDeviceRecord devices = 1;
+  string last_used_device_id = 2;
+  bool auto_connect_enabled = 3;
+}

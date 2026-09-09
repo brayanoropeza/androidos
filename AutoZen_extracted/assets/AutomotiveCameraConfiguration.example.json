@@ -1,0 +1,88 @@
+{
+  "$schema": "AutomotiveCameraConfiguration.schema.json",
+  "camera": {
+    "maxZoomLevel": 20.0,
+    "fixedAnimationDurationMs": 500,
+    "recenterAnimationDurationMs": 500,
+    "principalPointAnimationDurationMs": 500,
+    "maxRotationSpeedDegreesPerSecond": 60.0,
+    "zoomSpeedLevelsPerSecond": 0.5,
+    "headingStabilizationThresholdDegrees": 5.0
+  },
+  "roadParameters": {
+    "default": {
+      "zoom": 19.0
+    },
+    "speedClassMap": {
+      "delayBetweenThresholdChanges": 10,
+      "slowSpeed": {
+        "thresholds": [
+          { "speed": 0, "zoomLevel": 18.5 },
+          { "speed": 30, "zoomLevel": 18.0 },
+          { "speed": 90, "zoomLevel": 17.5 }
+        ]
+      },
+      "regularSpeed": {
+        "thresholds": [
+          { "speed": 0, "zoomLevel": 18.0 },
+          { "speed": 30, "zoomLevel": 17.5 },
+          { "speed": 90, "zoomLevel": 17.0 },
+          { "speed": 150, "zoomLevel": 16.5 }
+        ]
+      },
+      "fastSpeed": {
+        "thresholds": [
+          { "speed": 0, "zoomLevel": 17.0 },
+          { "speed": 60, "zoomLevel": 16.5 },
+          { "speed": 120, "zoomLevel": 16.0 },
+          { "speed": 180, "zoomLevel": 15.5 }
+        ]
+      }
+    }
+  },
+  "modes": {
+    "2D": {
+      "tiltDegrees": 0.0,
+      "principalPoint": { "x": 0.5, "y": 0.75 }
+    },
+    "3D": {
+      "tiltDegrees": 45.0,
+      "principalPoint": { "x": 0.5, "y": 0.75 }
+    },
+    "northUp": {
+      "tiltDegrees": 0.0,
+      "bearingDegrees": 0.0,
+      "principalPoint": { "x": 0.5, "y": 0.5 }
+    }
+  },
+  "maneuverDetection": {
+    "enabled": true,
+    "bearingThresholdDegrees": 25.0,
+    "rules": [
+      {
+        "roadClasses": [],
+        "actions": [
+          "depart",
+          "arrive",
+          "continue",
+          "leftFork",
+          "middleFork",
+          "rightFork",
+          "leftRamp",
+          "rightRamp"
+        ],
+        "options": null
+      },
+      {
+        "roadClasses": [],
+        "actions": [],
+        "options": {
+          "maxZoom": 19.0,
+          "earlyPreActivationMeters": 600.0,
+          "preActivationMeters": 300.0,
+          "postActivationMeters": 100.0
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+option java_package = "com.zenthek.autozen.proto";
+option java_multiple_files = true;
+
+enum ObdGaugeKindProto {
+  GAUGE_DIAL = 0;
+  GAUGE_TILE = 1;
+  GAUGE_BAR = 2;
+  // Slot hidden. The pid field is still written so un-hiding restores the previous parameter.
+  GAUGE_NONE = 3;
+}
+
+message ObdDashboardSlotRecord {
+  // Names of the ObdDashboardSlot / ObdPid Kotlin constants rather than proto enums: the PID set
+  // grows every milestone, and a name that no longer resolves falls back to the default slot instead
+  // of pinning a stale ordinal. Kind is a closed set of three, so an enum is safe there.
+  string slot = 1;
+  string pid = 2;
+  ObdGaugeKindProto kind = 3;
+}
+
+// One reassigned data slot of one cockpit composition — "Flat Six's second dial shows Coolant".
+// Sparse for the same reason as the classic slots: only what the user actually chose is written,
+// and unnamed indices fall back to the cockpit's designed defaults on read.
+message ObdCockpitSlotRecord {
+  // CockpitLayout constant name.
+  string cockpit = 1;
+  // Position in the cockpit's canonical slot order (left to right, as the settings list them).
+  int32 slot_index = 2;
+  // ObdPid constant name, resolved leniently like the classic slots'.
+  string pid = 3;
+}
+
+message ObdDashboardRecord {
+  string dashboard_id = 1;
+  // GaugeTheme constant name. Default 0 is the empty string, which resolves to the free theme (Ion).
+  string theme_name = 2;
+  repeated ObdDashboardSlotRecord slots = 3;
+  // CockpitLayout constant name. Empty resolves to CLASSIC (the 3-dial + 4-tile slot grid); the
+  // marque cockpit compositions are stored by name for the same growth reason as the PIDs above.
+  string cockpit_name = 4;
+  repeated ObdCockpitSlotRecord cockpit_slots = 5;
+  // Whether the cockpit compositions draw their gear digit. Stored *inverted* so proto3's false
+  // default means "shown": every record written before this field existed keeps the gear it had.
+  bool gear_hidden = 6;
+}
+
+// One learned gear ratio — engine rpm per km/h of road speed, which is constant per gear.
+// OBD-II carries no gear parameter, so the gears are learned from the rpm/speed stream instead
+// (see GearEstimator); persisting them means only a genuinely new car has to learn from scratch.
+message ObdGearRatioRecord {
+  float rpm_per_kmh = 1;
+  // Readings behind this cluster: weights the running mean and gates whether it is trusted.
+  int32 samples = 2;
+  // Dead (launch-anchor era, retired 2026-08-23): a field session against the instrument cluster
+  // proved a DSG's launch controller holds a repeatable slip plateau in the launch window, so
+  // launch-confirmed clusters were phantoms ~1.7x real 1st. Kept only so old stores parse.
+  bool launch_confirmed = 3;
+  // Dead — the launch-anchor election's vote count, see launch_confirmed.
+  int32 launch_count = 4;
+  // Proven to be a real gear by an unbroken cruise run at road speed — the one signal clutch-slip
+  // plateaus and shift transients cannot fake. Only cruise-established records are restored;
+  // records from before this field read false and are discarded at seed, which is exactly the
+  // intended one-time cleanup of maps written by the retired algorithms.
+  bool cruise_established = 5;
+}
+
+// What has been learned about the *car*, as opposed to how the user wants it displayed. Kept beside
+// the dashboards rather than inside one: swapping layout or theme must not discard a learned
+// gearbox, and every dashboard describes the same vehicle.
+message ObdVehicleProfile {
+  repeated ObdGearRatioRecord gear_ratios = 1;
+}
+
+message ObdDashboardStore {
+  repeated ObdDashboardRecord dashboards = 1;
+  // M9 will page between dashboards; carrying the pointer now means no migration then.
+  string active_dashboard_id = 2;
+  ObdVehicleProfile vehicle = 3;
+  // Keep the physics channels (rpm + speed) polling while another app is in front, so gear
+  // learning and the session log continue. Off by default — it costs battery — and store-level
+  // rather than per-dashboard: it describes the link, not a layout.
+  bool poll_in_background = 4;
+}

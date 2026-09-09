@@ -5,15 +5,15 @@ plugins {
 }
 
 android {
-    namespace = "com.rescue.sos"
+    namespace = "com.autozen.car"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.rescue.sos"
+        applicationId = "com.autozen.car"
         minSdk = 26
         targetSdk = 35
-        versionCode = 20
-        versionName = "2.5.0"
+        versionCode = 100
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -21,9 +21,9 @@ android {
     signingConfigs {
         create("release") {
             storeFile = file("keystore.jks")
-            storePassword = "oropsos_password"
-            keyAlias = "oropsos_key"
-            keyPassword = "oropsos_password"
+            storePassword = "autozen_password"
+            keyAlias = "autozen_key"
+            keyPassword = "autozen_password"
         }
     }
 

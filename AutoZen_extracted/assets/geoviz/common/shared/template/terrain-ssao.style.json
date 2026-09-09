@@ -1,0 +1,1 @@
+{"styles": [{"id": "terrain_offscreen_ssao_input", "layer": "terrain", "technique": "terrain", "description": "Terrain to offscreen with data necessary for screen space ambient occlusion.", "attr": {"category": "offscreen-ssao-input", "scale-for-elevating": ["ref", "Terrain.3d.Shading.Scale"]}}]}

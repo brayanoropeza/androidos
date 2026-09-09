@@ -1,0 +1,384 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "AutomotiveCameraConfiguration.schema.json",
+  "title": "AutomotiveCameraConfiguration",
+  "description": "Camera configuration: behavior, zoom policy, display modes, maneuver detection.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "Reference to this schema file for IDE validation."
+    },
+    "camera": {
+      "$ref": "#/definitions/CameraSettings"
+    },
+    "roadParameters": {
+      "$ref": "#/definitions/RoadParameters"
+    },
+    "modes": {
+      "$ref": "#/definitions/ModesConfig"
+    },
+    "maneuverDetection": {
+      "$ref": "#/definitions/ManeuverDetectionConfig"
+    }
+  },
+  "definitions": {
+    "CameraSettings": {
+      "type": "object",
+      "description": "Global camera behavior settings.",
+      "additionalProperties": false,
+      "properties": {
+        "maxZoomLevel": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 22,
+          "default": 20.0,
+          "description": "Maximum allowed zoom level."
+        },
+        "fixedAnimationDurationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 500,
+          "description": "Duration of fast-animation transitions in milliseconds."
+        },
+        "recenterAnimationDurationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Duration of tracking-camera recenter in milliseconds. Falls back to fixedAnimationDurationMs."
+        },
+        "principalPointAnimationDurationMs": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 500,
+          "description": "Duration of principal-point animation in milliseconds."
+        },
+        "maxRotationSpeedDegreesPerSecond": {
+          "type": "number",
+          "minimum": 0,
+          "default": 60.0,
+          "description": "Maximum bearing rotation speed in degrees per second."
+        },
+        "zoomSpeedLevelsPerSecond": {
+          "type": "number",
+          "minimum": 0,
+          "default": 0.5,
+          "description": "Speed of zoom level transitions per second."
+        },
+        "headingStabilizationThresholdDegrees": {
+          "type": "number",
+          "minimum": 0,
+          "default": 5.0,
+          "description": "Minimum heading change in degrees before bearing updates."
+        }
+      }
+    },
+    "RoadParameters": {
+      "type": "object",
+      "description": "Zoom policy configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "zoomPolicy": {
+          "type": "string",
+          "enum": ["fixed", "speedBased", "roadClass"],
+          "description": "Explicit policy selection. If unset, inferred from speedClassMap or roadClassMap, else fixed."
+        },
+        "default": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "zoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 22,
+              "default": 19.0,
+              "description": "Fallback zoom when no road class matches."
+            }
+          }
+        },
+        "roadClassMap": {
+          "type": "array",
+          "description": "Zoom per functional road class.",
+          "items": {
+            "$ref": "#/definitions/RoadClassMapping"
+          }
+        },
+        "speedClassMap": {
+          "$ref": "#/definitions/SpeedClassMap"
+        }
+      }
+    },
+    "RoadClassMapping": {
+      "type": "object",
+      "description": "Zoom for a functional road class.",
+      "additionalProperties": false,
+      "properties": {
+        "roadClass": {
+          "type": "string",
+          "enum": ["class1", "class2", "class3", "class4", "class5"],
+          "description": "Functional road class (class1 = highway, class5 = local)."
+        },
+        "trackingParameters": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "zoom": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 22,
+              "description": "Zoom level for this road class."
+            }
+          }
+        }
+      },
+      "required": ["roadClass", "trackingParameters"]
+    },
+    "SpeedClassMap": {
+      "type": "object",
+      "description": "Speed-based zoom configuration.",
+      "additionalProperties": false,
+      "properties": {
+        "delayBetweenThresholdChanges": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Minimum seconds between zoom changes."
+        },
+        "slowSpeed": {
+          "$ref": "#/definitions/SpeedClassThresholds"
+        },
+        "regularSpeed": {
+          "$ref": "#/definitions/SpeedClassThresholds"
+        },
+        "fastSpeed": {
+          "$ref": "#/definitions/SpeedClassThresholds"
+        }
+      }
+    },
+    "SpeedClassThresholds": {
+      "type": "object",
+      "description": "Speed thresholds for one timing profile.",
+      "additionalProperties": false,
+      "properties": {
+        "thresholds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SpeedThreshold"
+          },
+          "description": "Speed-to-zoom thresholds."
+        }
+      }
+    },
+    "SpeedThreshold": {
+      "type": "object",
+      "description": "Speed-to-zoom mapping.",
+      "additionalProperties": false,
+      "properties": {
+        "speed": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Speed in km/h."
+        },
+        "zoomLevel": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 22,
+          "description": "Zoom at or above this speed."
+        }
+      }
+    },
+    "ModesConfig": {
+      "type": "object",
+      "description": "Settings per display mode.",
+      "additionalProperties": false,
+      "properties": {
+        "2D": {
+          "$ref": "#/definitions/ModeOptions"
+        },
+        "3D": {
+          "$ref": "#/definitions/ModeOptions"
+        },
+        "northUp": {
+          "allOf": [{ "$ref": "#/definitions/ModeOptions" }],
+          "description": "North-up mode settings. principalPoint also anchors the area camera."
+        }
+      }
+    },
+    "ModeOptions": {
+      "type": "object",
+      "description": "Settings for one display mode.",
+      "additionalProperties": false,
+      "properties": {
+        "tiltDegrees": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 90,
+          "default": 0.0,
+          "description": "Tilt angle in degrees."
+        },
+        "bearingDegrees": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 360,
+          "description": "Fixed bearing in degrees. Omit to follow vehicle heading."
+        },
+        "principalPoint": {
+          "$ref": "#/definitions/PrincipalPoint"
+        }
+      }
+    },
+    "PrincipalPoint": {
+      "type": "object",
+      "description": "Normalized principal point within the active view rectangle.",
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.5,
+          "description": "Horizontal position (0.0 = left, 1.0 = right)."
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "default": 0.75,
+          "description": "Vertical position (0.0 = top, 1.0 = bottom)."
+        }
+      }
+    },
+    "ManeuverDetectionConfig": {
+      "type": "object",
+      "description": "Maneuver detection settings.",
+      "additionalProperties": false,
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable maneuver detection."
+        },
+        "bearingThresholdDegrees": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 180,
+          "description": "Max heading-to-maneuver angle for bearing override."
+        },
+        "rules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ManeuverRule"
+          },
+          "description": "Ordered rules. First match wins."
+        }
+      }
+    },
+    "ManeuverRule": {
+      "type": "object",
+      "description": "Camera reaction rule. Filters by road class and action, empty arrays act as wildcards. Use null options to exclude matched maneuvers. Evaluated in order, first match wins.",
+      "additionalProperties": false,
+      "properties": {
+        "roadClasses": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["class1", "class2", "class3", "class4", "class5"]
+          },
+          "description": "Road classes this rule applies to. Empty means matching all."
+        },
+        "actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "depart",
+              "arrive",
+              "leftUTurn",
+              "sharpLeftTurn",
+              "leftTurn",
+              "slightLeftTurn",
+              "continue",
+              "slightRightTurn",
+              "rightTurn",
+              "sharpRightTurn",
+              "rightUTurn",
+              "leftExit",
+              "rightExit",
+              "leftRamp",
+              "rightRamp",
+              "leftFork",
+              "middleFork",
+              "rightFork",
+              "enterHighwayFromLeft",
+              "enterHighwayFromRight",
+              "leftRoundaboutEnter",
+              "rightRoundaboutEnter",
+              "leftRoundaboutPass",
+              "rightRoundaboutPass",
+              "leftRoundaboutExit1",
+              "leftRoundaboutExit2",
+              "leftRoundaboutExit3",
+              "leftRoundaboutExit4",
+              "leftRoundaboutExit5",
+              "leftRoundaboutExit6",
+              "leftRoundaboutExit7",
+              "leftRoundaboutExit8",
+              "leftRoundaboutExit9",
+              "leftRoundaboutExit10",
+              "leftRoundaboutExit11",
+              "leftRoundaboutExit12",
+              "rightRoundaboutExit1",
+              "rightRoundaboutExit2",
+              "rightRoundaboutExit3",
+              "rightRoundaboutExit4",
+              "rightRoundaboutExit5",
+              "rightRoundaboutExit6",
+              "rightRoundaboutExit7",
+              "rightRoundaboutExit8",
+              "rightRoundaboutExit9",
+              "rightRoundaboutExit10",
+              "rightRoundaboutExit11",
+              "rightRoundaboutExit12"
+            ]
+          },
+          "description": "Maneuver actions this rule applies to. Empty means matching all."
+        },
+        "options": {
+          "oneOf": [
+            { "$ref": "#/definitions/ManeuverRuleOptions" },
+            { "type": "null" }
+          ],
+          "description": "Rule options, or null to exclude matched actions."
+        }
+      },
+      "required": ["options"]
+    },
+    "ManeuverRuleOptions": {
+      "type": "object",
+      "description": "Maneuver rule options.",
+      "additionalProperties": false,
+      "properties": {
+        "maxZoom": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 22,
+          "description": "Maximum zoom during maneuver."
+        },
+        "earlyPreActivationMeters": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Early pre-maneuver activation distance in meters."
+        },
+        "preActivationMeters": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Pre-maneuver activation distance in meters."
+        },
+        "postActivationMeters": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Post-maneuver activation distance in meters."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,1 @@
+{"styles": [{"id": "japan_background", "extends": "background", "layer": "background", "technique": "polygon", "attr": {"color": ["ref", "Japan.Background.Color"]}}]}

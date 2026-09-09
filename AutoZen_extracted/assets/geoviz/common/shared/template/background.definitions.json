@@ -1,0 +1,1 @@
+{"definitions": {"Background.Color": ["ref", "Land.Color"], "Lighting.Enabled": false, "Base.Ambient.Factor": ["ref", "Base.Ambient.Factor.Day"], "Base.Ambient.Factor.Day": 0.89, "Base.Diffuse.Factor": ["ref", "Base.Diffuse.Factor.Day"], "Base.Diffuse.Factor.Day": 0.5}}
